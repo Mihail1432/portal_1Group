@@ -9,30 +9,34 @@ from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from .models import MyModel, UserProfile
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views import View
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView as DjangoLoginView
+from django.urls import reverse_lazy
+from django.http import Http404
 
 
 
-def register(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            return redirect('profile', username=user.username)
-    else:
-        form = RegistrationForm()
-    return render(request, 'register.html', {'form': form})
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('login')  # Перенаправлення на сторінку логіну після успішної реєстрації
 
-def login(request):
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            return redirect('profile', username=user.username)
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user = form.save()
+        login(self.request, user)
+        return response
+
+class LoginView(DjangoLoginView):
+    template_name = 'login.html'
+    success_url = reverse_lazy('home')
 
 
 
@@ -41,20 +45,22 @@ def home(request):
     return render(request, 'home.html')
 
 
-class UserProfileView(LoginRequiredMixin, DetailView):
+class ProfileView(DetailView):
     model = User
-    template_name = 'profile.html'
+    template_name = 'profile_detail.html'
     context_object_name = 'user'
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
     
-    def get_queryset(self):
-        return User.objects.filter(username=self.kwargs['username'])
-    
-    def get(self, request, *args, **kwargs):
-        if not self.get_queryset().exists():
-            return self.handle_no_permission()
-        return super().get(request, *args, **kwargs)
+    def get_object(self, queryset=None):
+        username = self.kwargs.get('username')
+        print(f"Requested username: {username}")  # Додайте це для налагодження
+        if username is None:
+            raise Http404("Username not provided")
+        try:
+            user = User.objects.get(username=username)
+            print(f"Found user: {user}")  # Додайте це для налагодження
+            return user
+        except User.DoesNotExist:
+            raise Http404("User not found")
 
 # Список форумів
 def forum_list(request):
@@ -83,21 +89,21 @@ def event_list(request):
     return render(request, 'event_list.html', {'events': events})
 
 
-class UserProfileView(LoginRequiredMixin, DetailView):
-    model = User
-    template_name = 'profile.html'
-    context_object_name = 'user'
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
-    
-    def get_queryset(self):
-        return User.objects.filter(username=self.kwargs['username'])
-    
-    def get(self, request, *args, **kwargs):
-        if not self.get_queryset().exists():
-            return self.handle_no_permission()
-        return super().get(request, *args, **kwargs)
 
-# Logout view using class-based view
-class CustomLogoutView(LoginRequiredMixin, LogoutView):
-    next_page = reverse_lazy('home')
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home')
+
+
+
+class MyDetailView(PermissionRequiredMixin, DetailView):
+    model = MyModel
+    permission_required = 'app.can_view_mymodel'
+    template_name = 'mytemplate.html'
+
+    def handle_no_permission(self):
+        return redirect('login')  # Або перенаправлення на іншу сторінку
+    
+

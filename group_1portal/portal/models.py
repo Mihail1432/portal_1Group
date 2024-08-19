@@ -26,11 +26,10 @@ class User(AbstractUser):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
-
 # Форум
 class Forum(models.Model):
     title = models.CharField(max_length=200)
@@ -169,3 +168,12 @@ class GalleryItem(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class MyModel(models.Model):
+    # Ваші поля тут
+
+    class Meta:
+        permissions = [
+            ("can_view_mymodel", "Can view my model"),
+        ]

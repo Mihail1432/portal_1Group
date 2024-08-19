@@ -1,12 +1,19 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профіль {{ user.username }}</title>
-</head>
-<body>
-    <h1>Профіль {{ user.username }}</h1>
-    <p>Це профіль користувача {{ user.username }}.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+    <h1>Profile: {{ user.username }}</h1>
+    
+    <section>
+        <h2>Personal Information</h2>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <!-- Add more user details here if needed -->
+    </section>
+
+    <section>
+        <h2>Recent Activities</h2>
+        <!-- Here you can add any recent activities or posts by the user -->
+    </section>
+{% endblock %}

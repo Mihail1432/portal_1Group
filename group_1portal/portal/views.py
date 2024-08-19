@@ -47,20 +47,11 @@ def home(request):
 
 class ProfileView(DetailView):
     model = User
-    template_name = 'profile_detail.html'
+    template_name = 'profile1.html'
     context_object_name = 'user'
     
     def get_object(self, queryset=None):
         username = self.kwargs.get('username')
-        print(f"Requested username: {username}")  # Додайте це для налагодження
-        if username is None:
-            raise Http404("Username not provided")
-        try:
-            user = User.objects.get(username=username)
-            print(f"Found user: {user}")  # Додайте це для налагодження
-            return user
-        except User.DoesNotExist:
-            raise Http404("User not found")
 
 # Список форумів
 def forum_list(request):

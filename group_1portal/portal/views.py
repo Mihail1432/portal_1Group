@@ -77,3 +77,12 @@ class MyDetailView(PermissionRequiredMixin, DetailView):
 
     def handle_no_permission(self):
         return redirect('login')
+
+
+class ProfileView(DetailView):
+    model = User
+    template_name = 'portal/profile1.html'
+    context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        return self.request.user

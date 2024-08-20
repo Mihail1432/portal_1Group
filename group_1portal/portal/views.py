@@ -50,8 +50,9 @@ class ProfileView(DetailView):
     template_name = 'profile1.html'
     context_object_name = 'user'
     
-    def get_object(self, queryset=None):
-        username = self.kwargs.get('username')
+    def get_object(self, *args, **kwargs):
+        username = self.kwargs.get("username")
+        return User.objects.get(username=username)
 
 # Список форумів
 def forum_list(request):

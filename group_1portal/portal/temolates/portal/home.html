@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна сторінка</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Ласкаво просимо на портал групи</h1>
+        <p>Це головна сторінка порталу групи, де ви можете знайти всю основну інформацію.</p>
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Форум</h2>
+                <p><a href="{% url 'forum_list' %}">Переглянути форум</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Події</h2>
+                <p><a href="{% url 'event_list' %}">Переглянути події</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Портфоліо</h2>
+                <p><a href="{% url 'portfolio_list' %}">Переглянути портфоліо</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

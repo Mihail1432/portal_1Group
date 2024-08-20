@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфоліо</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Список портфоліо</h2>
+        <ul class="list-group">
+            {% for portfolio in portfolios %}
+                <li class="list-group-item">
+                    <a href="{% url 'portfolio_detail' portfolio.id %}">{{ portfolio.title }}</a>
+                    <p>{{ portfolio.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

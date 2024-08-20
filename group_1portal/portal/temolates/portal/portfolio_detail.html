@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Деталі портфоліо</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ portfolio.title }}</h2>
+        <p>{{ portfolio.description }}</p>
+        {% if portfolio.screenshot %}
+            <img src="{{ portfolio.screenshot.url }}" alt="Screenshot" class="img-thumbnail">
+        {% endif %}
+        {% if portfolio.file %}
+            <p><a href="{{ portfolio.file.url }}">Завантажити файл</a></p>
+        {% endif %}
+    </div>
+</body>
+</html>

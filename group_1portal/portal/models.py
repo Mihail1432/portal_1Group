@@ -10,7 +10,6 @@ class Role(models.Model):
 
 # Користувачі
 class User(AbstractUser):
-    username = models.TextField(max_length=50)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='portal_users',

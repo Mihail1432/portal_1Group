@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Forum, ForumPost, Portfolio, Event, User
+from .models import Forum, ForumPost, Portfolio, Event
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
@@ -20,19 +20,25 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.urls import reverse_lazy
 from django.http import Http404
+from django.contrib.auth import get_user_model
+from .forms import CustomUserCreationForm
+User = get_user_model()
+
+
 
 
 
 class RegisterView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = 'register.html'
-    success_url = reverse_lazy('login')  # Перенаправлення на сторінку логіну після успішної реєстрації
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         user = form.save()
         login(self.request, user)
-        return response
+        return super().form_valid(form)
+
+
 
 class LoginView(DjangoLoginView):
     template_name = 'login.html'

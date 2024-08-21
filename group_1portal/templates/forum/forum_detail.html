@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ forum.name }}</h1>
+  <p>{{ forum.description }}</p>
+
+  <h2>Comments:</h2>
+  <ul>
+    {% for comment in comments %}
+      <li>
+        <p>{{ comment.content }}</p>
+        <small>Posted by {{ comment.created_by }} on {{ comment.created_at }}</small>
+      </li>
+    {% empty %}
+      <li>No comments yet.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Add a comment:</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Comment</button>
+  </form>
+{% endblock %}

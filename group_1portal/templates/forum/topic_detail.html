@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ topic.title }}</h1>
+    <p>Created by {{ topic.created_by }} on {{ topic.created_at }}</p>
+    <ul>
+        {% for post in topic.posts.all %}
+            <li>
+                <strong>{{ post.created_by }}</strong> ({{ post.created_at }}): 
+                <p>{{ post.content }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Add a Post</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Post</button>
+    </form>
+    <a href="{% url 'forum:forum_list' %}">Back to Forum List</a>
+{% endblock %}

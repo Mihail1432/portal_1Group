@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Forums</h1>
+
+  <ul>
+    {% for forum in forums %}
+      <li>
+        <a href="{% url 'forum:forum_detail' forum.id %}">{{ forum.name }}</a>
+        <p>{{ forum.description }}</p>
+      </li>
+    {% empty %}
+      <li>No forums available.</li>
+    {% endfor %}
+  </ul>
+
+  <h2><a href="{% url 'forum:create_forum' %}">Create a new forum</a></h2>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ forum.name }} Topics</title>
+</head>
+<body>
+    <h1>{{ forum.name }}</h1>
+    <ul>
+        {% for topic in topics %}
+            <li><a href="{% url 'topic_detail' topic.id %}">{{ topic.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <a href="{% url 'create_topic' forum.id %}">Create New Topic</a>
+    {% endif %}
+    <a href="{% url 'forum_list' %}">Back to Forums</a>
+</body>
+</html>

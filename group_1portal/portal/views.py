@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Forum, ForumPost, Portfolio, Event
+from .models import Portfolio, Event
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
@@ -22,6 +22,11 @@ from django.urls import reverse_lazy
 from django.http import Http404
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm
+from django.db import models
+
+
+
+
 User = get_user_model()
 
 
@@ -31,7 +36,7 @@ User = get_user_model()
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'register.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         user = form.save()
@@ -60,16 +65,32 @@ class ProfileView(DetailView):
         username = self.kwargs.get("username")
         return User.objects.get(username=username)
 
-# Список форумів
-def forum_list(request):
-    forums = Forum.objects.all()
-    return render(request, 'forum_list.html', {'forums': forums})
 
-# Деталі форуму
-def forum_detail(request, id):
-    forum = get_object_or_404(Forum, id=id)
-    posts = ForumPost.objects.filter(forum=forum)
-    return render(request, 'forum_detail.html', {'forum': forum, 'posts': posts})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Список портфоліо
 def portfolio_list(request):

@@ -7,7 +7,6 @@
     {% for forum in forums %}
       <li>
         <a href="{% url 'forum:forum_detail' forum.id %}">{{ forum.name }}</a>
-        <p>{{ forum.description }}</p>
       </li>
     {% empty %}
       <li>No forums available.</li>

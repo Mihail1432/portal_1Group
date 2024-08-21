@@ -4,22 +4,30 @@
   <h1>{{ forum.name }}</h1>
   <p>{{ forum.description }}</p>
 
-  <h2>Comments:</h2>
+  {% if request.user == forum.created_by %}
+    <a href="{% url 'forum:edit_forum' forum.id %}" class="btn btn-secondary">Edit Forum</a>
+    <a href="{% url 'forum:delete_forum' forum.id %}" class="btn btn-danger">Delete Forum</a>
+  {% endif %}
+
+  <h2>Comments</h2>
   <ul>
     {% for comment in comments %}
       <li>
-        <p>{{ comment.content }}</p>
-        <small>Posted by {{ comment.created_by }} on {{ comment.created_at }}</small>
+        <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+        {% if comment.user == request.user %}
+          <a href="{% url 'forum:edit_comment' comment.id %}" class="btn btn-secondary">Edit</a>
+          <a href="{% url 'forum:delete_comment' comment.id %}" class="btn btn-danger">Delete</a>
+        {% endif %}
       </li>
     {% empty %}
       <li>No comments yet.</li>
     {% endfor %}
   </ul>
 
-  <h2>Add a comment:</h2>
+  <h2>Add a Comment</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Add Comment</button>
+    <button type="submit" class="btn btn-primary">Submit Comment</button>
   </form>
 {% endblock %}

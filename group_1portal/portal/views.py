@@ -36,19 +36,20 @@ User = get_user_model()
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'register.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('home')  # Перенаправление на главную страницу после регистрации
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return super().form_valid(form)
-
-
+        return redirect(self.success_url) 
 
 class LoginView(DjangoLoginView):
     template_name = 'login.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('home')  # Указание пути по умолчанию
 
+    def get_success_url(self):
+        # Используем success_url по умолчанию
+        return self.success_url
 
 
 # Головна сторінка

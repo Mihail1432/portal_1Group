@@ -16,4 +16,7 @@
         <h2>Recent Activities</h2>
         <!-- Here you can add any recent activities or posts by the user -->
     </section>
+    {% if request.user.is_superuser %}
+        <a href="{% url 'change_user_permissions' username=user.username %}">Change User Permissions</a>
+    {% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
-from .views import ProfileView, LogoutView, MyDetailView, RegisterView, LoginView
+from .views import ProfileView, LogoutView, MyDetailView, RegisterView, LoginView, change_user_permissions
 
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('mymodel/<int:pk>/', MyDetailView.as_view(), name='mymodel_detail'),
+    path('change_user_permissions/<str:username>/', change_user_permissions, name='change_user_permissions'),
 ]

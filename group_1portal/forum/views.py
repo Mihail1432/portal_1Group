@@ -1,8 +1,20 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Forum, Comment
 from .forms import ForumForm, CommentForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden
+
+
+
+
+def is_admin(user):
+    return user.is_superuser
+
+def is_moderator(user):
+    return user.groups.filter(name='Moderator').exists()
+
+
+
 
 
 
@@ -24,10 +36,19 @@ def forum_detail(request, forum_id):
             comment.user = request.user
             comment.save()
             return redirect('forum:forum_detail', forum_id=forum.id)
+        # Initialize the variable
+    is_moderator_or_admin = False
 
-    return render(request, 'forum/forum_detail.html', {'forum': forum, 'comments': comments, 'form': form})
+    # Check if user is authenticated
+    user_groups = request.user.groups.values_list('name', flat=True)
+    is_moderator_or_admin = 'Moderator' in user_groups or 'Admin' in user_groups
 
-
+    return render(request, 'forum/forum_detail.html', {
+        'forum': forum,
+        'comments': comments,
+        'form': form,
+        'is_moderator_or_admin': is_moderator_or_admin
+    })
 
 @login_required
 def create_forum(request):
@@ -64,20 +85,14 @@ def edit_forum(request, forum_id):
     return render(request, 'forum/edit_forum.html', {'form': form, 'forum': forum})
 
 @login_required
-def delete_forum(request, forum_id):
-    forum = get_object_or_404(Forum, id=forum_id)
-    
-    # Проверка, является ли текущий пользователь создателем форума
-    if request.user != forum.created_by:
-        # Можно вернуть HTTP 403 или перенаправить на страницу с уведомлением
-        return HttpResponseForbidden("You are not allowed to delete this forum.")
-    
+@user_passes_test(lambda u: u.is_superuser or is_moderator(u))
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    # Проверяем, если текущий пользователь является администратором или модератором
     if request.method == 'POST':
-        forum.delete()
-        return redirect('forum:forum_list')
-    
-    return render(request, 'forum/delete_forum.html', {'forum': forum})
-
+        comment.delete()
+        return redirect('forum:forum_detail', forum_id=comment.forum.id)
+    return render(request, 'forum/delete_comment.html', {'comment': comment})
 
 @login_required
 def edit_comment(request, comment_id):
@@ -97,17 +112,13 @@ def edit_comment(request, comment_id):
     return render(request, 'forum/edit_comment.html', {'form': form, 'comment': comment})
 
 
+
 @login_required
-def delete_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-
-    if request.user != comment.user:
-        return redirect('forum:forum_detail', forum_id=comment.forum.id)
-
+@user_passes_test(lambda u: u.is_superuser or is_moderator(u))
+def delete_forum(request, forum_id):
+    forum = get_object_or_404(Forum, id=forum_id)
+    # Проверяем, если текущий пользователь является администратором или модератором
     if request.method == 'POST':
-        comment.delete()
-        return redirect('forum:forum_detail', forum_id=comment.forum.id)
-
-    return render(request, 'forum/delete_comment.html', {'comment': comment})
-
-
+        forum.delete()
+        return redirect('forum:forum_list')
+    return render(request, 'forum/delete_forum.html', {'forum': forum})

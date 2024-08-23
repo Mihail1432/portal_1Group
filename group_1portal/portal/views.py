@@ -8,7 +8,7 @@ from .forms import RegistrationForm, LoginForm
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import MyModel, UserProfile
 from django.contrib.auth import logout
@@ -21,10 +21,10 @@ from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.urls import reverse_lazy
 from django.http import Http404
 from django.contrib.auth import get_user_model
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, UserPermissionForm
 from django.db import models
-
-
+from django.contrib.auth.decorators import user_passes_test
+from forum.views import is_admin, is_moderator
 
 
 User = get_user_model()
@@ -68,10 +68,23 @@ class ProfileView(DetailView):
 
 
 
+@user_passes_test(is_admin)
+def change_user_permissions(request, username):
+    user = get_object_or_404(User, username=username)
+    
+    if request.method == 'POST':
+        form = UserPermissionForm(request.POST, instance=user)
+        if form.is_valid():
+            group = form.cleaned_data['group']
+            # Удаляем все предыдущие группы
+            user.groups.clear()
+            # Добавляем новую группу
+            user.groups.add(group)
+            return redirect('profile', username=user.username)
+    else:
+        form = UserPermissionForm()
 
-
-
-
+    return render(request, 'change_user_permissions.html', {'form': form, 'user': user})
 
 
 

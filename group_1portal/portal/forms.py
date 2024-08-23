@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.models import Group
 
 User = get_user_model()
 
@@ -24,3 +24,13 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 
+class UserPermissionForm(forms.ModelForm):
+    group = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        required=True,
+        label="Select Role"
+    )
+
+    class Meta:
+        model = User
+        fields = ['group']

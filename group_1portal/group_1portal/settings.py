@@ -39,6 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'portal',
     'forum',
+    'announcements',
+    'diary',
+    'votes',
+    'surveys',
+    'portfolio',
+    'materials',
+    'events',
+    'gallery'
 ]
 
 MIDDLEWARE = [

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'portfolio',
     'materials',
     'events',
-    'gallery'
+    'gallery',
+    'core'
 ]
 
 MIDDLEWARE = [

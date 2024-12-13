@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Список портфоліо{% endblock %}
+
+{% block content %}
+    <h1>Список портфоліо</h1>
+    <ul>
+        {% for portfolio in portfolios %}
+        <li><a href="{% url 'portfolio_detail' portfolio.id %}">{{ portfolio.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

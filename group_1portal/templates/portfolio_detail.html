@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ portfolio.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ portfolio.title }}</h1>
+    <p>{{ portfolio.description }}</p>
+    {% if portfolio.screenshot %}
+        <img src="{{ portfolio.screenshot.url }}" alt="{{ portfolio.title }} Screenshot" class="img-fluid">
+    {% endif %}
+    {% if portfolio.file %}
+        <p><a href="{{ portfolio.file.url }}" class="btn btn-primary">Завантажити файл</a></p>
+    {% endif %}
+    <a href="{% url 'portfolio_list' %}">Назад до списку портфоліо</a>
+{% endblock %}

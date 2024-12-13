@@ -1,0 +1,10 @@
+<!-- change_user_permissions.html -->
+<h2>Change Permissions for {{ user.username }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Change Permissions</button>
+</form>
+
+<a href="{% url 'profile' username=user.username %}">Cancel</a>

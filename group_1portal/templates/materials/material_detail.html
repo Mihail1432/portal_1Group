@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load custom_tags %}
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12dvh;">
+    <div class="d-flex gap-3 mb-3">
+        {% if material.file %}
+            {% if material.file|is:"png" or material.file|is:"jpeg" or material.file|is:"jpg" %}
+                <img src="{{ material.file.url }}" alt="" class="card-img w-50">
+            {% elif material.file|is:"mp4" %}
+                <video src="{{ material.file.url }}" class="w-50" controls></video>
+            {% elif material.file|is:"mp3" %}
+                <audio src="{{material.file.url}}" class="w-50" controls></audio>
+            {% else %}
+                <a href="{{material.file.url}}" class="btn btn-primary w-50" download style="height: fit-content;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                        <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                    </svg>
+                    {{material.get_file_name}}
+                </a>
+            {% endif %}
+        {% elif material.video %}
+            <iframe src="{{material.video|format_url}}" class="w-50" style="min-height: 50vh;"></iframe>
+        {% endif %}
+        <div class="card w-50" style="height: fit-content;">
+            <div class="card-header">
+                <h4>{{material.name}}</h4>
+                <h6 class="text-muted">{{material.uploaded_at}}</h6>
+            </div>
+            {% if material.description != "" %}
+                <div class="card-body">
+                    <p class="card-text fs-5">
+                        {{material.description}}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

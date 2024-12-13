@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container-fluid" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex justify-content-center gap-5 h-100">
+        <div class="card" style="width: 35%; height: fit-content; position: sticky; top: 12vh">
+            <div class="card-header bg-info"></div>
+            <div class="card-body">
+                <h2 class="card-title m-0">{{vote.title}}</h2>
+                <hr class="my-1">
+                <p class="card-subtitle text-muted d-flex justify-content-between w-100">
+                    <span>Голосів: {{vote.get_users_that_completed|length}}</span>
+                </p>
+                <p class="card-text">{{vote.description}}</p>
+            </div>
+        </div>
+        <div class="d-flex flex-column w-75">
+            <form action="" method="post" id="form">
+                {% csrf_token %}
+                <div class="card w-100">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <span class="h3 m-0 p-0">{{vote.question}}</span>
+                            <button type="submit" class="btn btn-sm btn-success">Підтвердити</button>
+                        </div>
+                    </div>
+        
+                    <div class="card-body">
+                        <div class="d-flex flex-column gap-3 align-items-start ps-4">
+                            {% for option in vote.options.all %}
+                                <div class="d-flex gap-3 w-100">
+                                    <input type="radio" name="{{vote.id}}" id="{{option.id}}" value="{{option.id}}" class="vote-option" data-question-id="{{vote.id}}">
+    
+                                    <div class="progress" role="progressbar" aria-valuenow="{{option.get_procentage_of_choosing}}" aria-valuemin="0" aria-valuemax="100" style="width: 90%; height: 6vh; position: relative;">
+                                        <div class="progress-bar text-bg-info" style="width: {{option.get_procentage_of_choosing}}%; height: 100%;"></div>
+                                        <div class="d-flex justify-content-between align-items-center fs-4 px-4 w-100 h-100" style="position: absolute; top: 0; left: 0;">
+                                            <span>{{option.value}}</span>
+                                            <span>{{option.get_procentage_of_choosing}}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+    
+                        <!-- Warning -->
+                        <div class="alert alert-warning mt-3 mb-0    d-none" id="warning-{{vote.id}}">
+                            <span>⚠ Please check at least one option.</span>
+                        </div>
+                    </div>        
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/vote_option_validation.js' %}"></script>
+{% endblock %}

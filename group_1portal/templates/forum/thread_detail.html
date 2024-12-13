@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="card">
+        <div class="card-header text-bg-warning">
+            <h3>{{thread.title}}</h3>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-1">
+                    {% if thread.created_by.profile.avatar %}
+                        <img src="{{thread.created_by.profile.avatar.url}}" class="rounded-circle" alt="" style="width: 25px; height: 25px; object-fit: cover;">
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-person-circle card-img" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                    {% endif %}
+                    <a href="{% url 'account:profile' thread.created_by.username %}" class="h5 text-muted link-underline link-underline-opacity-0 link-underline-opacity-75-hover mt-1">{{thread.created_by.username}}</a>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                    </svg>
+                    {{thread.created_at}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            Постів в гілці: <b>{{thread.posts.all|length}}</b>
+        </div>
+    </div>
+
+    <div class="d-grid gap-3 mt-2 mb-3">
+        {% for post in thread.posts.all %}
+            <div class="card w-75">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-1">
+                            {% if post.created_by.profile.avatar %}
+                                <img src="{{post.created_by.profile.avatar.url}}" class="rounded-circle" alt="" style="width: 25px; height: 25px; object-fit: cover;">
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-person-circle card-img" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                </svg>
+                            {% endif %}
+                            <a href="{% url 'account:profile' post.created_by.username %}" class="h5 text-muted link-underline link-underline-opacity-0 link-underline-opacity-75-hover mt-1">{{post.created_by.username}}</a>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                            </svg>
+                            {{post.created_at}}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        {{post.message|linebreaks}}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="list-group">
+                <li class="list-group-item text-center">
+                    На цій гілці немає постів
+                </li>
+            </div>
+        {% endfor %}
+
+        <div class="collapse" id="post-create-collapse">
+            <form action="{% url 'forum:post-create' thread.pk %}" method="post" class="form-control py-2">
+                {% csrf_token %}
+
+                <p>
+                    <label for="message">Message</label>
+                    <textarea name="message" id="message" class="form-control"></textarea>
+                </p>
+                
+                <div class="d-flex justify-content-center w-100">
+                    <button type="submit" class="btn btn-success">Опублікувати</button>
+                </div>
+            </form>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#post-create-collapse">+ Створити пост</button>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <h1 class="text-center w-100">Оголошення</h1>
+
+    <div class="d-grid gap-3 mt-5 mb-3">
+        {% for announcement in announcements %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{announcement.title}}</h5>
+                    <p class="card-text text-wrap">
+                        {{announcement.description|linebreaks}}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

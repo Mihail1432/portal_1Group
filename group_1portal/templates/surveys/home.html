@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    
+    <h1 class="text-center w-100">Опитування</h1>
+
+    <div class="d-flex flex-column align-items-center my-5">
+        <h3 class="fw-normal">Пошук</h3>
+        <form action="{% url 'surveys:search' %}" method="get" class="d-inline-flex gap-3 w-50">
+            <input type="text" name="query" id="" placeholder="Пошук опитування" class="form-control">
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+    
+    <h4 class="text-center w-100 mt-4 fw-normal">Останні опитування</h4>
+    <hr>
+
+    <div class="d-flex justify-content-center mb-5">
+        <div class="row row-cols-1 row-cols-md-5 g-3 w-100">
+            {% for survey in recent %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <h5 class="card-title">{{survey.title|truncatechars:20}}</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">{{survey.get_users_that_completed|length}} проходжень</h6>
+                            <p class="card-text">{{survey.description|truncatechars:60}}.</p>
+                            <a href="{% url 'surveys:survey-detail' survey.pk %}" class="btn btn-sm btn-primary stretched-link w-100">Перейти</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

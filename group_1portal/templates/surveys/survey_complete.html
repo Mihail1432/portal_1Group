@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container-fluid" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex justify-content-center gap-5 h-100">
+        <div class="card mb-3" style="width: 35%; height: fit-content; position: sticky; top: 12vh;">
+            <div class="card-header bg-info"></div>
+            <div class="card-body">
+                <h3 class="card-title m-0">{{survey.title}}</h3>
+                <hr class="my-1">
+                <p class="card-subtitle text-muted d-flex justify-content-between w-100">
+                    <span>К-ість питань: {{survey.questions.all|length}}</span>
+                    <span>Опитано осіб: {{survey.get_users_that_completed|length}}</span>
+                </p>
+                <p class="card-text">{{survey.description|linebreaks}}</p>
+            </div>
+        </div>
+        <form action="" method="post" id="form" class="w-75">
+            {% csrf_token %}
+            <div class="carousel slide mb-3" id="survey">
+                <div class="carousel-inner">
+                    {% for index in slides %}
+                        <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                            <div class="d-grid gap-3">
+                                {% with start_index=index end_index=index|add:3 %}
+                                    {% for question in survey.questions.all %}
+                                        {% if forloop.counter0 >= start_index and forloop.counter0 < end_index %}
+                                            <div class="card d-block w-100">
+                                                <div class="card-header">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="h3 m-0 p-0">{{forloop.counter}}. {{question.text}}</span>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            {% if question.type == "single" %}
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-radios" viewBox="0 0 16 16">
+                                                                    <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zM0 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0m7-1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5M3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6m0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                                                                </svg>
+                                                            {% else %}
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks-grid" viewBox="0 0 16 16">
+                                                                    <path d="M2 10h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1m9-9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zm0-10a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM2 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2zm7 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2zM0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.354.854a.5.5 0 1 0-.708-.708L3 3.793l-.646-.647a.5.5 0 1 0-.708.708l1 1a.5.5 0 0 0 .708 0z"/>
+                                                                </svg>
+                                                            {% endif %}
+
+                                                            {{question.get_type_display}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div class="card-body">
+                                                    <div class="d-flex flex-column gap-3 align-items-start ps-4">
+                                                        {% for option in question.options.all %}
+                                                            <div class="d-flex w-100 gap-3">
+                                                                {% if question.type == "single" %}
+                                                                    <input type="radio" name="{{question.id}}" id="{{option.id}}" value="{{option.id}}" class="single-choice" data-question-id="{{question.id}}">
+                                                                {% else %}
+                                                                    <input type="checkbox" name="{{question.id}}" id="{{option.id}}" value="{{option.id}}" class="multiple-choice" data-question-id="{{question.id}}">
+                                                                {% endif %}
+                                                                <ul class="list-group w-100">
+                                                                    <li class="list-group-item">{{option.value}}</li>
+                                                                </ul>
+                                                            </div>
+                                                        {% endfor %}
+
+                                                        <!-- Warning message div, hidden by default -->
+                                                        <div class="alert alert-warning mt-2 d-none" id="warning-{{question.id}}">
+                                                            <span>⚠ Please check at least one option.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>        
+                                            </div> 
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Warning message div, hidden by default -->
+            <div class="alert alert-warning mt-2 d-none" id="submission-warning">
+                <span>⚠ Please answer all questions.</span>
+            </div>
+            
+            <div class="d-flex justify-content-between w-100 px-2 mb-3">
+                <button class="btn btn-outline-primary py-1 px-2" type="button" data-bs-target="#survey" data-bs-slide="prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                    </svg>
+                </button>
+
+                <button type="submit" class="btn btn-success">Надіслати</button>
+
+                <button class="btn btn-outline-primary py-1 px-2" type="button" data-bs-target="#survey" data-bs-slide="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="{% static 'js/survey_option_validation.js' %}"></script>
+{% endblock %}

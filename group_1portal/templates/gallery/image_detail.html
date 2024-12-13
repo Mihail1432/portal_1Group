@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12dvh;">
+    <div class="d-flex gap-3 mb-3">
+        <img src="{{image.image.url}}" class="w-50">
+        <div class="card w-50" style="height: fit-content;">
+            <div class="card-header">
+                <h4>{{image.title}}</h4>
+                <h6 class="text-muted">{{image.uploaded_at}}</h6>
+            </div>
+            <div class="card-body">
+                <p class="card-text fs-5">
+                    {{image.description}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

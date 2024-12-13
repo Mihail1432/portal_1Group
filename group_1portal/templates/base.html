@@ -5,82 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Мій Портал{% endblock %}</title>
     <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
         }
+
         header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 0;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        nav ul {
-            list-style-type: none;
+
+        header h1 {
+            font-size: 2rem;
+            color: #ffffff;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: #b0b0b0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #6200ea;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #3700b3;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #757575;
+        }
+        .navbar {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
             margin: 0;
             padding: 0;
-            text-align: center;
+            display: flex;
+            gap: 15px;
         }
-        nav ul li {
+
+        .navbar ul li {
             display: inline;
-            margin: 0 15px;
         }
-        nav ul li a {
-            color: #fff;
+
+        .navbar ul li a {
+            color: #ffffff;
             text-decoration: none;
-            font-size: 16px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-        .auth-links {
-            float: right;
-        }
-        .auth-links a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-        .auth-links a:hover {
-            text-decoration: underline;
+
+        .navbar ul li a:hover {
+            background-color: #6200ea;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Головна</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'profile' user.username %}">Профіль: {{ user.username }}</a></li>
-                    <li><a href="{% url 'logout' %}">Вихід</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Вхід</a></li>
-                    <li><a href="{% url 'register' %}">Реєстрація</a></li>
-                {% endif %}
-            </ul>
+            <div class="navbar">
+                <ul>
+                    <li><a href="{% url 'home' %}">Головна</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'profile' user.username %}">Профіль: {{ user.username }}</a></li>
+                        <li><a href="{% url 'logout' %}">Вихід</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Вхід</a></li>
+                        <li><a href="{% url 'register' %}">Реєстрація</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </nav>
     </header>
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
-    <footer>
-        <p>© 2024 Мій Портал</p>
-    </footer>
+
 </body>
 </html>

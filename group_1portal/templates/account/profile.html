@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex h-100 gap-3">
+        <div class="w-25">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        {% if profile.avatar %}
+                            <img src="{{profile.avatar.url}}" class="rounded-circle" alt="" style="width: 200px; height: 200px; object-fit: cover;">
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="currentColor" class="bi bi-person-circle card-img" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                            </svg>
+                        {% endif %}
+                        <p class="card-text fs-3 mt-2">
+                            {{profile.user.username}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% if request.user == profile.user %}
+            <div class="d-grid gap-3">
+                <a href="{% url 'account:profile-edit' profile.user.username %}" class="btn btn-primary mt-2">Редагувати</a>
+                <form action="{% url 'account:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger w-100">Вийти</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <div class="card w-75" style="height: fit-content;">
+            <div class="card-header">
+                <span class="h3">Про себе</span>
+            </div>
+            <div class="card-body">
+                <div class="card-text fs-5">
+                    {% if profile.bio != '' %}
+                        {{profile.bio}}
+                    {% else %}
+                        Користувач ще не вказав інформацію "Про себе".
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

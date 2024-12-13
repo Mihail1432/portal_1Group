@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <h1 class="text-center w-100">Матеріали</h1>
+
+    <div class="d-flex justify-content-center mt-5 mb-3">
+        <div class="row row-cols-1 row-cols-md-5 g-3 w-100">
+            {% for material in materials %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <h5 class="card-title">{{material.name|truncatechars:17}}</h5>
+                            <p class="card-text">{{material.description|truncatechars:40}}</p>
+                            <a href="{% url 'materials:material-detail' material.pk %}" class="btn btn-sm btn-primary stretched-link w-100">Дивитись</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>    
+{% endblock %}

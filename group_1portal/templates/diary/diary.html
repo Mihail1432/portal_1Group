@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex gap-3 w-100">
+        <div class="d-grid w-75">
+            <div class="card">
+                <div class="card-header text-bg-primary fw-medium fs-2">Мої оцінки за {{month|date:"E Y"}}</div>
+                <div class="card-body">
+                    Загальна кількість логіків за цей місяць: <span class="badge bg-primary">{{total}}</span> логіків
+                </div>
+            </div>
+    
+            <div class="row row-cols-1 row-cols-md-5 g-4 mt-1 mb-3">
+                {% for grade in grades %}
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header{% if grade.logiks < 4 %} text-bg-info{% elif grade.logiks < 8 %} text-bg-success{% else %} text-bg-danger{% endif %}">
+                                <h3 class="text-center p-0 m-0">+ {{grade.logiks}}</h3>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle text-muted">{{grade.date|date:"d F Y"}}</h6>
+                                <div class="card-text">
+                                    {{grade.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <form action="" method="post" class="card" style="height: 35vh;">
+            {% csrf_token %}
+
+            <div class="card-header text-bg-success fs-4 fw-medium">Подивитись оцінки за конкретний місяць</div>
+            
+            <div class="card-body form-control" style="height: fit-content;">
+                <label for="dairy-month">Місяць:</label>
+                <input type="hidden" name="username" value="{{student.username}}">
+                <input type="month" name="dairy-month" id="dairy-month" class="form-control" value="{{month|date:'Y-m'}}">
+                <button type="submit" class="btn btn-sm btn-primary mt-3 w-100">Перейти</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

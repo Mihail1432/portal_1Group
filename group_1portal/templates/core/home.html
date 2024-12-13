@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+        <h1 class="mb-5" style="font-size: 10vh;">Головна сторінка</h1>
+
+        <div class="d-grid w-100 gap-5 mb-3">
+            <!-- Оголошення -->
+            <div class="card">
+                <div class="card-header text-bg-primary">
+                    <h2 class="text-center w-100">Оголошення</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        {% for announcement in announcements %}
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{announcement.title}}</h5>
+                                    <p class="card-text text-wrap">
+                                        {{announcement.description|linebreaks}}
+                                    </p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <span class="text-center w-100">Немає оголошень</span>
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-center w-100 mt-3">
+                            <a href="{% url 'announcements:home' %}" class="btn btn-primary w-25">Дивитись всі</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Події -->
+            <div class="card">
+                <div class="card-header text-bg-success">
+                    <h2 class="text-center">Події</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-md-3 g4">
+                        {% for event in events %}
+                            <div class="col">
+                                <div class="col">
+                                    <div class="card"  style="overflow: hidden;">
+                                        {% if event.thumbnail %}
+                                            <img src="{{event.thumbnail.url}}" alt="" class="card-img-top">
+                                        {% endif %}
+                                        <div class="card-body p-3">
+                                            <h5 class="card-title">{{event.title|truncatechars:45}}</h5>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                                                        </svg>
+                                                        {{event.date|date:"d-m-Y H:i"}}
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                                                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                                        </svg>
+                                                        {{event.location}}
+                                                    </div>
+                                                </div>
+                                            </h6>
+                                            <p class="card-text">{{event.description|truncatechars:100}}.</p>
+                                            <a href="{% url 'events:event-detail' event.pk %}" class="btn btn-sm btn-primary stretched-link w-100">Детальніше</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <span class="text-center w-100">Немає подій</span>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex justify-content-center w-100 mt-3">
+                        <a href="{% url 'events:home' %}" class="btn btn-primary w-25">Дивитись всі</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Щоденик -->
+            <div class="card w-100">
+                <div class="card-header text-bg-danger">
+                    <h2 class="text-center w-100">Щоденик</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-3 w-100">
+                        <div class="d-grid w-75">
+                            <div class="card">
+                                <div class="card-header text-bg-primary fw-medium fs-2">Мої оцінки за {% now "E Y" %}</div>
+                                <div class="card-body">
+                                    Загальна кількість логіків за цей місяць: <span class="badge bg-primary">{{total}}</span> логіків
+                                </div>
+                            </div>
+                    
+                            <div class="row row-cols-1 row-cols-md-5 g-4 mt-1 mb-3">
+                                {% for grade in grades %}
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header{% if grade.logiks < 4 %} text-bg-info{% elif grade.logiks < 8 %} text-bg-success{% else %} text-bg-danger{% endif %}">
+                                                <h3 class="text-center p-0 m-0">+ {{grade.logiks}}</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle text-muted">{{grade.date|date:"d F Y"}}</h6>
+                                                <div class="card-text">
+                                                    {{grade.description}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    
+                        {% now "Y" as current_year %}
+                        {% now "m" as current_month %}
+                        <form action="{% url 'diary:student-diary' request.user.username current_year current_month %}" method="post" class="card" style="height: 35vh;">
+                            {% csrf_token %}
+                
+                            <div class="card-header text-bg-success fs-4 fw-medium">Подивитись оцінки за конкретний місяць</div>
+                            
+                            <div class="card-body form-control" style="height: fit-content;">
+                                <label for="dairy-month">Місяць:</label>
+                                <input type="hidden" name="username" value="{{request.user.username}}">
+                                <input type="month" name="dairy-month" id="dairy-month" class="form-control" value="{{current_year}}-{{current_month}}">
+                                <button type="submit" class="btn btn-sm btn-primary mt-3 w-100">Перейти</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Всі розділи -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center w-100">Всі розділи</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'forum:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Форум</a>
+                        <a href="{% url 'diary:student-diary' request.user.username current_year current_month %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Електроний щоденик</a>
+                        <a href="{% url 'events:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Події</a>
+                        <a href="{% url 'surveys:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Опитування</a>
+                        <a href="{% url 'votes:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Голосування</a>
+                        <a href="{% url 'announcements:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Оголошення</a>
+                        <a href="{% url 'materials:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Матеріали</a>
+                        <a href="{% url 'portfolio:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Портфоліо</a>
+                        <a href="{% url 'gallery:home' %}" class=" btn btn-outline-primary px-2" style="width: fit-content;">Галерея</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

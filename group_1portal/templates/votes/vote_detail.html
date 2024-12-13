@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid" style="min-height: 88vh; margin-top: 12vh;">
+    <div class="d-flex justify-content-center gap-5 h-100">
+        <div class="card" style="width: 35%; height: fit-content; position: sticky; top: 12vh">
+            <div class="card-header bg-info"></div>
+            <div class="card-body rounded-0">
+                <h2 class="card-title m-0">{{vote.title}}</h2>
+                <hr class="my-1">
+                <p class="card-subtitle text-muted d-flex justify-content-between w-100">
+                    <span>Голосів: {{vote.get_users_that_completed|length}}</span>
+                </p>
+                <p class="card-text">{{vote.description|linebreaks}}</p>
+            </div>
+        </div>
+        <div class="d-flex flex-column w-75">
+            <div class="card w-100">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <span class="h3 m-0 p-0">{{vote.question}}</span>
+                        <a href="{% url 'votes:vote-complete' vote.pk %}" class="btn btn-sm btn-primary">Проголосувати</a>
+                    </div>
+                </div>
+    
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3 align-items-start ps-4">
+                        {% for option in vote.options.all %}
+                            <div class="progress" role="progressbar" aria-valuenow="{{option.get_procentage_of_choosing}}" aria-valuemin="0" aria-valuemax="100" style="width: 90%; height: 6vh; position: relative;">
+                                <div class="progress-bar text-bg-info" style="width: {{option.get_procentage_of_choosing}}%; height: 100%;"></div>
+                                <div class="d-flex justify-content-between align-items-center fs-4 px-4 w-100 h-100" style="position: absolute; top: 0; left: 0;">
+                                    <span>{{option.value}}</span>
+                                    <span>{{option.get_procentage_of_choosing}}%</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

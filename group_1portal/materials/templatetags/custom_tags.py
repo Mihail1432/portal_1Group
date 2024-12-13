@@ -8,4 +8,4 @@ def file_type(file, extension: str):
 
 @register.filter("format_url")
 def get_code(url):
-    return f"https://www.youtube.com/embed/{url.split("=")[-1]}"
+    return f"https://www.youtube.com/embed/{url.split('=')[-1]}"
